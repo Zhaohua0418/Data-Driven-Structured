@@ -1,0 +1,46 @@
+classdef simulator
+    properties
+        A,B,C,D,G,nx,nu,ny,nd;
+        sampler = struct('u', @() 2*rand(obj.m, 1)-1,...
+                         'w', @() ball_sample(1, obj.n)');
+    end
+    
+    methods
+        function obj = simulator(sys, nx, nu, ny, nd)
+            obj.A = sys.A;
+            obj.B = sys.B;
+            obj.C = sys.C;
+            obj.D = sys.D;
+            obj.G = sys.G;
+            obj.nx = nx;
+            obj.nu = nu;
+            obj.ny = ny;
+            obj.nd = nd;
+        end
+        
+        function out = run(obj, epsilon, T)
+            X0 = zeros(obj.nx,1);
+            xcurr = x0;
+            X = [X0 zeros(obj.nx,T)];
+            U = zeros(obj.nu, T);
+            W = zeros(obj.n, T);
+            for i = 1:T
+                %inputs
+                ucurr = obj.sampler.u();
+                
+                %propagation 
+                %this is where the noise enters (process ?)
+                wcurr = obj.sampler.w()*epsilon;
+                xnext = obj.A*xcurr + obj.B*ucurr + wcurr; 
+               
+                
+                %storage
+                X(:, i+1) = xnext;
+                U(:, i) = ucurr;
+                W(:, i) = wcurr;
+                xcurr = xnext;
+            end
+        end
+    end
+end
+

@@ -1,0 +1,6 @@
+C = {5 "cereal" struct('a',1) "C+"; 12 "pizza" 140 "B";...
+    23 "salmon" 367 "A"; 2 "cookies" 160 "D"};
+
+T = cell2table(C,...
+    "VariableNames",["Age" "FavoriteFood" "Calories" "NutritionGrade"])
+
